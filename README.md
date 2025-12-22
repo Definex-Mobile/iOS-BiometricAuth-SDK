@@ -335,6 +335,7 @@ For licensing, custom features, or enterprise support:
 **DefineX Technology Inc.**
 - 📧 Email: ekin.demir@teamdefinex.com
 - 🌐 Website: https://www.definex.com
+- 📱 Mobile SDKs: https://github.com/Definex-Mobile
 
 ### Issues & Contributions
 
