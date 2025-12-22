@@ -2,15 +2,7 @@ import XCTest
 import LocalAuthentication
 @testable import DefXBiometric
 
-/// Comprehensive unit tests for DefXBiometric SDK
-///
-/// These tests verify:
-/// - Biometric type detection (Face ID, Touch ID, none)
-/// - Authentication success and failure scenarios
-/// - Error mapping from LAError to BiometricError
-/// - Thread safety (completion on main thread)
-/// - Completion called exactly once
-/// - Fallback title behavior
+/// Unit tests for DefXBiometric SDK.
 @available(iOS 11.0, macOS 10.13.2, *)
 final class DefXBiometricTests: XCTestCase {
     

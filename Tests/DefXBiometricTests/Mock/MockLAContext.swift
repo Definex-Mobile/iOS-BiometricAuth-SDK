@@ -2,10 +2,7 @@ import Foundation
 import LocalAuthentication
 @testable import DefXBiometric
 
-/// Mock implementation of LAContextProtocol for unit testing
-///
-/// This mock allows precise control over biometric authentication behavior
-/// without requiring actual device biometrics or user interaction.
+/// Mock implementation of LAContextProtocol for unit testing.
 @available(iOS 11.0, macOS 10.13.2, *)
 final class MockLAContext: LAContextProtocol {
     

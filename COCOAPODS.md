@@ -1,14 +1,14 @@
 # CocoaPods Integration Guide
 
-This guide explains how to use DefXBiometric SDK via CocoaPods.
+Complete guide for integrating DefXBiometric SDK via CocoaPods.
 
-## Local Pod Usage (Development)
+---
 
-For local development and testing before publishing to a remote repository.
+## Installation
 
 ### Step 1: Create or Update Podfile
 
-In your iOS app project directory, create a `Podfile`:
+In your iOS app project directory, create or edit `Podfile`:
 
 ```ruby
 # Podfile
@@ -17,19 +17,21 @@ platform :ios, '12.0'
 use_frameworks!
 
 target 'YourAppName' do
-  # Local pod - points to SDK directory
-  pod 'DefXBiometric', :path => '../DefXBiometric'
+  # From Git repository (recommended)
+  pod 'DefXBiometric', :git => 'https://github.com/ekinbarisdmr/iOS-BiometricAuth-SDK.git', :tag => '1.0.1'
+  
+  # Or use local path for development
+  # pod 'DefXBiometric', :path => '../DefXBiometric'
 end
 ```
 
-**Important:** Adjust the `:path` based on your directory structure:
-- Same parent directory: `'../DefXBiometric'`
-- Different location: `'/Users/eknbrsdmr/Desktop/DefXBiometric'`
+**Path Options:**
+- **Git repository**: `:git => 'URL', :tag => 'VERSION'`
+- **Local development**: `:path => '../DefXBiometric'` or `:path => '/path/to/DefXBiometric'`
 
 ### Step 2: Install Pods
 
 ```bash
-cd /path/to/your/app
 pod install
 ```
 
@@ -41,29 +43,73 @@ open YourAppName.xcworkspace
 
 **Important:** Always use `.xcworkspace` file, NOT `.xcodeproj`
 
-### Step 4: Import and Use
+---
+
+## Usage
+
+### Import and Authenticate
 
 ```swift
 import DefXBiometric
 
-// Use the SDK
-DefXBiometricAuth.shared.authenticate(reason: "Login") { result in
-    // Handle result
+// Check availability
+if DefXBiometricAuth.shared.isBiometricAvailable() {
+    // Authenticate
+    DefXBiometricAuth.shared.authenticate(reason: "Login to your account") { result in
+        switch result {
+        case .success:
+            print("✅ Authentication successful")
+        case .failure(let error):
+            print("❌ Authentication failed: \(error)")
+        }
+    }
 }
 ```
 
-## Example Podfile for DefXBiometricExample App
+---
 
-Create this file at `/Users/eknbrsdmr/Desktop/DefXBiometricExample/Podfile`:
+## Troubleshooting
+
+### "Unable to find a specification for DefXBiometric"
+
+**Solution:**
+- Verify `:git` URL or `:path` is correct
+- Ensure `DefXBiometric.podspec` exists in the path
+- Run `pod install --repo-update`
+
+### Build Errors After Pod Install
+
+**Solution:**
+
+```bash
+pod deintegrate
+pod install
+```
+
+### "The sandbox is not in sync with the Podfile.lock"
+
+**Solution:**
+
+```bash
+pod install
+```
+
+### Module 'DefXBiometric' not found
+
+**Solution:**
+- Open `.xcworkspace`, not `.xcodeproj`
+- Clean build: **Product → Clean Build Folder** (⇧⌘K)
+- Delete DerivedData:
+  ```bash
+  rm -rf ~/Library/Developer/Xcode/DerivedData
+  ```
+
+### CocoaPods Code Signing Issues
+
+If you encounter `_CodeSignature` or rsync permission errors:
 
 ```ruby
-platform :ios, '12.0'
-use_frameworks!
-
-target 'DefXBiometricExample' do
-  pod 'DefXBiometric', :path => '../DefXBiometric'
-end
-
+# Add to Podfile
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
@@ -73,93 +119,51 @@ post_install do |installer|
 end
 ```
 
-## Validating Podspec
+---
 
-Before publishing, validate the podspec:
+## Updating the SDK
 
-```bash
-cd /Users/eknbrsdmr/Desktop/DefXBiometric
-pod spec lint DefXBiometric.podspec --allow-warnings
-```
-
-**Note:** For local-only validation:
-```bash
-pod lib lint DefXBiometric.podspec --allow-warnings
-```
-
-## Remote Repository Setup (Future)
-
-When ready to publish to a Git repository:
-
-### Step 1: Update Podspec Source
-
-Edit `DefXBiometric.podspec`:
-
-```ruby
-spec.source = { 
-  :git => 'https://github.com/DefineX/DefXBiometric.git', 
-  :tag => "#{spec.version}" 
-}
-```
-
-### Step 2: Tag and Push
+### Update to Latest Version
 
 ```bash
-git tag 1.0.0
-git push origin 1.0.0
+pod update DefXBiometric
 ```
 
-### Step 3: Update Podfile
+### Force Reinstall
 
-Users will then use:
-
-```ruby
-pod 'DefXBiometric', '~> 1.0'
-```
-
-## Troubleshooting
-
-### "Unable to find a specification for DefXBiometric"
-
-**Solution:**
-- Check the `:path` in Podfile is correct
-- Verify `DefXBiometric.podspec` exists in the specified path
-- Run `pod install --repo-update`
-
-### Build Errors After Pod Install
-
-**Solution:**
 ```bash
 pod deintegrate
 pod install
 ```
 
-### "The sandbox is not in sync with the Podfile.lock"
+---
 
-**Solution:**
+## Local Development
+
+For local SDK development, use path-based pod:
+
+```ruby
+# Podfile
+pod 'DefXBiometric', :path => '../DefXBiometric'
+```
+
+After making changes to the SDK:
+
 ```bash
-pod install
+pod update DefXBiometric
 ```
 
-### Module 'DefXBiometric' not found
+---
 
-**Solution:**
-- Make sure you're opening `.xcworkspace`, not `.xcodeproj`
-- Clean build: **Product → Clean Build Folder** (⇧⌘K)
-- Delete `DerivedData`:
-  ```bash
-  rm -rf ~/Library/Developer/Xcode/DerivedData
-  ```
+## Best Practices
 
-## Resource Bundle Access
+1. ✅ Always open `.xcworkspace` after pod install
+2. ✅ Commit `Podfile.lock` to version control
+3. ✅ Add `Pods/` to `.gitignore`
+4. ✅ Use specific version tags for production
+5. ✅ Use local path only for development
 
-CocoaPods handles resource bundles automatically. The SDK uses:
-
-```swift
-NSLocalizedString("key", bundle: .module, comment: "")
-```
-
-For CocoaPods, SPM's `Bundle.module` is replaced with the resource bundle.
+---
 
 ## Directory Structure
 
@@ -173,29 +177,15 @@ YourApp/
 │   ├── DefXBiometric/        # SDK source
 │   └── ...
 ├── YourApp.xcodeproj
-└── YourApp.xcworkspace     # ⚠️ Open this!
+└── YourApp.xcworkspace       # ⚠️ Open this!
 ```
 
-## Updating Local Pod
+---
 
-When you make changes to DefXBiometric SDK:
+## Support
 
-```bash
-cd /path/to/your/app
-pod update DefXBiometric
-```
+For issues or questions:
 
-Or force reinstall:
-```bash
-pod deintegrate
-pod install
-```
-
-## Best Practices
-
-1. ✅ Use `:path` for local development
-2. ✅ Always open `.xcworkspace`
-3. ✅ Commit `Podfile.lock` to version control
-4. ✅ Add `Pods/` to `.gitignore`
-5. ✅ Test with `pod lib lint` before publishing
-
+**DefineX Technology Inc.**
+- 📧 Email: ekin.demir@teamdefinex.com
+- 🌐 Website: https://www.definex.com

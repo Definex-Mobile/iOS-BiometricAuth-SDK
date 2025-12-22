@@ -1,15 +1,7 @@
 import Foundation
 import LocalAuthentication
 
-/// Protocol abstraction for LAContext to enable testing
-///
-/// This protocol wraps the essential LAContext methods needed for biometric authentication,
-/// allowing us to inject mock implementations in unit tests.
-///
-/// **Technical Note - Sendability:**
-/// iOS 12 deployment target kullanıyoruz, ancak Swift 6 concurrency uyumluluğu için
-/// evaluatePolicy closure'ını @Sendable olarak işaretliyoruz. Bu, closure'ın thread-safe
-/// olduğunu garanti eder ve modern Swift concurrency modeline uyum sağlar.
+/// Protocol abstraction for LAContext to enable testing.
 @available(iOS 11.0, macOS 10.13.2, *)
 internal protocol LAContextProtocol {
     /// Evaluates the specified policy

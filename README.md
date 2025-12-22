@@ -46,7 +46,7 @@ A production-ready, clean, and testable iOS Biometric Authentication SDK for Fac
 - **iOS:** 12.0+
 - **Xcode:** 14.0+
 - **Swift:** 5.7+
-- **Dependencies:** None (pure iOS SDK)
+- **Dependencies:** None
 
 ---
 
@@ -139,80 +139,28 @@ DefXBiometricAuth.shared.authenticate(
         // Navigate to authenticated screen
         
     case .failure(let error):
-        print("❌ Authentication failed: \(error.identifier)")
-        
         switch error {
         case .cancelled:
-            // User pressed cancel button - handle gracefully
-            print("User cancelled authentication")
+            // User cancelled - handle gracefully
+            break
             
-        case .fallback:
-            // User chose fallback option (biometrics-only mode: won't occur)
+        case .notAvailable, .notEnrolled:
+            // Show alternative authentication
             showPasswordLogin()
-            
-        case .notAvailable:
-            // Biometric not available - show alternative auth
-            showPasswordLogin()
-            
-        case .notEnrolled:
-            // No biometric enrolled - guide user to Settings
-            showSettingsAlert()
             
         case .lockout:
-            // Too many failed attempts - user must unlock with passcode
+            // Too many attempts - user must unlock device
             showLockoutAlert()
             
         case .systemError(let message):
-            // System error occurred
             print("System error: \(message)")
+            showPasswordLogin()
             
-        case .unknown:
-            // Unknown error
-            print("Unknown error occurred")
+        default:
+            showPasswordLogin()
         }
     }
 }
-```
-
----
-
-## Configuration
-
-### Default Behavior
-
-The SDK uses intelligent defaults:
-
-```swift
-// If reason is empty, SDK uses: "Authenticate to continue"
-DefXBiometricAuth.shared.authenticate { result in
-    // Handle result
-}
-
-// Custom reason (recommended for better UX)
-DefXBiometricAuth.shared.authenticate(
-    reason: "Login to your account"
-) { result in
-    // Handle result
-}
-```
-
-### Biometrics-Only Mode
-
-The SDK operates in **biometrics-only mode** by default:
-- Uses `.deviceOwnerAuthenticationWithBiometrics` policy (Face ID/Touch ID only)
-- No passcode fallback option shown in the authentication prompt
-- `fallbackTitle` parameter is ignored and maintained only for API compatibility
-- If biometrics fail, app should provide alternative authentication (e.g., password login)
-
-### Singleton vs Instance
-
-```swift
-// Option 1: Use singleton (recommended for most cases)
-DefXBiometricAuth.shared.authenticate(reason: "Login") { result in }
-
-// Option 2: Create instance (useful for testing)
-let auth = DefXBiometricAuth()
-auth.authenticate(reason: "Login") { result in }
 ```
 
 ---
@@ -223,80 +171,118 @@ auth.authenticate(reason: "Login") { result in }
 
 Main entry point for biometric authentication.
 
-#### Properties
-
 ```swift
 // Shared singleton instance
 public static let shared: DefXBiometricAuth
-```
 
-#### Methods
-
-```swift
 // Get available biometric type
 public func availableBiometricType() -> BiometricType
 
-// Check if biometric authentication is available
+// Check if biometric is available
 public func isBiometricAvailable() -> Bool
 
-// Perform authentication
+// Authenticate user
 public func authenticate(
     reason: String = "Authenticate to continue",
-    fallbackTitle: String? = nil,  // Ignored in biometrics-only mode
+    fallbackTitle: String? = nil,  // Ignored (biometrics-only mode)
     completion: @escaping (Result<Void, BiometricError>) -> Void
 )
 ```
 
 ### BiometricType
 
-Represents available biometric authentication types.
-
 ```swift
 public enum BiometricType {
-    case faceID    // Face ID is available
-    case touchID   // Touch ID is available
+    case faceID    // Face ID available
+    case touchID   // Touch ID available
     case none      // No biometric available
 }
 ```
 
 ### BiometricError
 
-Semantic error types for flexible UI handling.
-
 ```swift
 public enum BiometricError: Error {
-    case notAvailable        // Biometric not available on device
-    case notEnrolled         // No biometric data enrolled
-    case lockout             // Locked due to too many failed attempts
-    case cancelled           // User cancelled authentication
-    case fallback            // User chose fallback method
-    case systemError(String) // System error occurred
+    case notAvailable        // Biometric not available
+    case notEnrolled         // No biometric enrolled
+    case lockout             // Too many failed attempts
+    case cancelled           // User cancelled
+    case fallback            // User chose fallback
+    case systemError(String) // System error
     case unknown             // Unknown error
+    
+    // Stable identifier for localization
+    public var identifier: String
 }
 ```
 
-#### Error Identifier
+---
+
+## Configuration
+
+### Biometrics-Only Mode
+
+The SDK uses **biometrics-only policy** by default:
+- Face ID/Touch ID authentication only
+- No passcode fallback option shown
+- `fallbackTitle` parameter is ignored
+- Apps should provide alternative authentication (e.g., password) when biometrics fail
+
+### Default Behavior
 
 ```swift
-// Get stable string identifier for localization
-let identifier = error.identifier
-// Returns: "biometric_error_not_available", etc.
+// Uses default reason: "Authenticate to continue"
+DefXBiometricAuth.shared.authenticate { result in
+    // Handle result
+}
+
+// Custom reason (recommended)
+DefXBiometricAuth.shared.authenticate(
+    reason: "Login to your account"
+) { result in
+    // Handle result
+}
+```
+
+---
+
+## Error Handling
+
+```swift
+switch error {
+case .cancelled:
+    // User cancelled - don't show error
+    break
+    
+case .notAvailable, .notEnrolled:
+    // Biometric not usable - show password
+    showPasswordLogin()
+    
+case .lockout:
+    // Guide user to unlock device
+    showAlert("Too many attempts. Please unlock your device.")
+    
+case .systemError(let message):
+    print("System error: \(message)")
+    showPasswordLogin()
+    
+default:
+    showPasswordLogin()
+}
 ```
 
 ---
 
 ## Best Practices
 
-### 1. Always Check Availability First
+### 1. Check Availability First
 
 ```swift
 guard DefXBiometricAuth.shared.isBiometricAvailable() else {
-    // Show password login immediately
     showPasswordLogin()
     return
 }
 
-// Proceed with biometric auth
 DefXBiometricAuth.shared.authenticate(reason: "Login") { result in
     // Handle result
 }
@@ -305,132 +291,38 @@ DefXBiometricAuth.shared.authenticate(reason: "Login") { result in
 ### 2. Provide Clear Reason Text
 
 ```swift
-// ❌ BAD - Generic text
+// ❌ BAD
 authenticate(reason: "Authenticate")
 
-// ✅ GOOD - Clear, specific context
+// ✅ GOOD
 authenticate(reason: "Authenticate to view your balance")
 authenticate(reason: "Confirm payment of $50.00")
 ```
 
-### 3. Handle All Error Cases
+### 3. Always Provide Alternative Auth
 
-```swift
-switch error {
-case .cancelled:
-    // User changed their mind - don't show error
-    break
-    
-case .fallback:
-    // User wants password - show login
-    showPasswordLogin()
-    
-case .notAvailable, .notEnrolled:
-    // Can't use biometric - show alternative
-    showPasswordLogin()
-    
-case .lockout:
-    // Guide user to unlock device
-    showAlert("Too many attempts. Please unlock your device.")
-    
-case .systemError(let message):
-    // Log for debugging
-    print("System error: \(message)")
-    showPasswordLogin()
-    
-case .unknown:
-    // Fallback to password
-    showPasswordLogin()
-}
-```
+Since the SDK operates in biometrics-only mode, always offer password/PIN login when biometric authentication is unavailable or fails.
 
-### 4. Don't Store Sensitive Data in UserDefaults
+### 4. Test on Real Device
 
-```swift
-// ❌ BAD
-UserDefaults.standard.set(password, forKey: "password")
-
-// ✅ GOOD - Use Keychain for sensitive data
-// (Future: DefXBiometric will provide KeychainManager)
-```
-
-### 5. Test on Real Device
-
-Simulator supports biometric simulation, but always test on real device for:
-- Touch ID sensor behavior
-- Face ID with glasses/mask/lighting conditions
-- Performance and UI responsiveness
+Simulators support biometric testing, but always verify on real devices for accurate behavior and performance.
 
 ---
 
-## Security Notes
+## Security
 
-### Current Implementation
+DefXBiometric uses iOS LocalAuthentication framework with system-level security:
 
-DefXBiometric focuses on **biometric authentication** with iOS system-level security:
+- Biometric data stays in Secure Enclave
+- SDK never accesses raw biometric data
+- Thread-safe operations
+- Completion callbacks always on main thread
 
-- ✅ Uses iOS LocalAuthentication framework
-- ✅ Biometric data stays in Secure Enclave
-- ✅ SDK never accesses raw biometric data
-- ✅ Thread-safe operations
-- ✅ Swift 6 Sendable compliance
-
-### Recommended Security Practices
-
-1. **Certificate Pinning** - Implement in your network layer
-2. **Code Obfuscation** - Use tools like SwiftShield (external)
-3. **Binary Protection** - Distribute as XCFramework for basic obfuscation
-4. **Runtime Checks** - Add your own security policy layer
-5. **Secure Keychain** - Use `kSecAttrAccessControl` with biometric flags
-
----
-
-## Sample App
-
-### Local Testing
-
-A test app is included for local development:
-
-```bash
-cd /path/to/DefXBiometricLocalTest
-pod install
-open DefXBiometricLocalTest.xcworkspace
-```
-
-**Features:**
-- ✅ Face ID/Touch ID testing
-- ✅ All error scenarios
-- ✅ UI examples
-- ✅ Best practices demonstration
-
-**Note:** Test app uses local pod path (not published pod).
-
----
-
-## Version History
-
-### 1.0.1 (2025-12-18)
-
-**Bug Fixes**
-
-- ✅ Fixed CocoaPods `use_frameworks!` rsync/_CodeSignature permission errors
-- ✅ Added `static_framework = true` to force static linking
-- ✅ Disabled code signing on pod target to prevent embed issues
-- ✅ Updated repository URLs to personal repo
-
-### 1.0.0 (2025-01-XX)
-
-**Initial Release**
-
-- ✅ Face ID and Touch ID support
-- ✅ iOS 12.0+ compatibility
-- ✅ SPM, CocoaPods distribution
-- ✅ Comprehensive error handling
-- ✅ Thread-safe operations
-- ✅ Swift 6 Sendable support
-- ✅ Protocol-based testable architecture
-- ✅ Default reason text fallback
-- ✅ Public API access control
+**Recommended practices:**
+- Use Keychain for sensitive data storage
+- Implement certificate pinning in network layer
+- Add runtime security checks as needed
+- Consider XCFramework distribution for basic obfuscation
 
 ---
 
@@ -438,18 +330,17 @@ open DefXBiometricLocalTest.xcworkspace
 
 ### Commercial Support
 
-For commercial licensing, custom features, or enterprise support:
+For licensing, custom features, or enterprise support:
 
 **DefineX Technology Inc.**
 - 📧 Email: ekin.demir@teamdefinex.com
 - 🌐 Website: https://www.definex.com
-- 📱 Mobile SDKs: https://github.com/Definex-Mobile
 
 ### Issues & Contributions
 
-- 🐛 **Bug Reports:** Open an issue with reproduction steps
-- 💡 **Feature Requests:** Describe use case and expected behavior
-- 🔧 **Pull Requests:** Contact us first for contribution guidelines
+- 🐛 Bug Reports: Open an issue with reproduction steps
+- 💡 Feature Requests: Describe use case and expected behavior
+- 🔧 Pull Requests: Contact us first for contribution guidelines
 
 ---
 
