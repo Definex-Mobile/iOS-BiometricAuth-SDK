@@ -58,13 +58,13 @@ Add to your `Package.swift`:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/ekinbarisdmr/iOS-BiometricAuth-SDK.git", from: "1.0.1")
+    .package(url: "https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git", from: "1.0.0")
 ]
 ```
 
 Or in Xcode:
 1. **File → Add Package Dependencies...**
-2. Enter URL: `https://github.com/ekinbarisdmr/iOS-BiometricAuth-SDK.git`
+2. Enter URL: `https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git`
 3. Select version: `1.0.1` or higher
 
 ### CocoaPods
@@ -72,7 +72,7 @@ Or in Xcode:
 Add to your `Podfile`:
 
 ```ruby
-pod 'DefXBiometric', :git => 'https://github.com/ekinbarisdmr/iOS-BiometricAuth-SDK.git', :tag => '1.0.1'
+pod 'DefXBiometric', :git => 'https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git', :tag => '1.0.0'
 ```
 
 Then run:
@@ -356,4 +356,4 @@ For licensing inquiries: info@definex.com
 
 ---
 
-**Made with ❤️ by DefineX Mobile Team**
+**Made with by DefineX Mobile Team**
