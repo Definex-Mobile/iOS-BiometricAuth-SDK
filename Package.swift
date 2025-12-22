@@ -1,26 +1,48 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "DefXBiometric",
+    
+    // MARK: - Default Localization
+    defaultLocalization: "en",
+    
+    // MARK: - Platform Requirements
+    platforms: [
+        .iOS(.v12)
+    ],
+    
+    // MARK: - Products
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "DefXBiometric",
             targets: ["DefXBiometric"]
-        ),
+        )
     ],
+    
+    // MARK: - Targets
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
+        
+        // Main SDK target
         .target(
-            name: "DefXBiometric"
+            name: "DefXBiometric",
+            path: "Sources/DefXBiometric"
         ),
+        
+        // Test target
         .testTarget(
             name: "DefXBiometricTests",
-            dependencies: ["DefXBiometric"]
-        ),
-    ]
+            
+            // MARK: - Dependencies
+            dependencies: [
+                "DefXBiometric"
+            ],
+            path: "Tests/DefXBiometricTests"
+        )
+    ],
+    
+    // MARK: - Swift Language Version
+    swiftLanguageVersions: [.v5]
 )
