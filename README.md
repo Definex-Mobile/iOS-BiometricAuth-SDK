@@ -62,7 +62,7 @@ dependencies: [
 Or in Xcode:
 1. **File → Add Package Dependencies...**
 2. Enter URL: `https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git`
-3. Select version: `1.0.1` or higher
+3. Select version: `1.0.0` or higher
 
 ### CocoaPods
 

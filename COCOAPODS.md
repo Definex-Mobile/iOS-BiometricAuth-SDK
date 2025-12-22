@@ -18,7 +18,7 @@ use_frameworks!
 
 target 'YourAppName' do
   # From Git repository (recommended)
-  pod 'DefXBiometric', :git => 'https://github.com/ekinbarisdmr/iOS-BiometricAuth-SDK.git', :tag => '1.0.1'
+  pod 'DefXBiometric', :git => 'https://github.com/ekinbarisdmr/iOS-BiometricAuth-SDK.git', :tag => '1.0.0'
   
   # Or use local path for development
   # pod 'DefXBiometric', :path => '../DefXBiometric'
