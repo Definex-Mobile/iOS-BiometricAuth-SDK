@@ -19,9 +19,6 @@ A production-ready, clean, and testable iOS Biometric Authentication SDK for Fac
 - [Configuration](#configuration)
 - [API Reference](#api-reference)
 - [Best Practices](#best-practices)
-- [Security Notes](#security-notes)
-- [Sample App](#sample-app)
-- [Version History](#version-history)
 - [Support](#support)
 - [License](#license)
 
