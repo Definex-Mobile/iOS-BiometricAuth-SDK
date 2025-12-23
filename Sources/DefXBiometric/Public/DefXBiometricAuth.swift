@@ -10,8 +10,8 @@ public final class DefXBiometricAuth {
     private let capabilityDetector: BiometricCapabilityDetector
     private let authenticator: BiometricAuthenticator
     
-    // Lock for thread-safe access to public methods
-    private let lock = NSLock()
+    // Serial queue for thread-safe access
+    private let queue = DispatchQueue(label: "com.definex.defxbiometric.auth.serial")
     
     // MARK: - Singleton
     
@@ -21,7 +21,7 @@ public final class DefXBiometricAuth {
     // MARK: - Initialization
     
     /// Creates a new instance of DefXBiometricAuth
-    public init() {
+    private init() {
         self.capabilityDetector = BiometricCapabilityDetector()
         self.authenticator = BiometricAuthenticator()
     }
@@ -40,49 +40,45 @@ public final class DefXBiometricAuth {
     /// Returns the type of biometric authentication available on the device.
     /// - Returns: The biometric type (faceID, touchID, or none)
     public func availableBiometricType() -> BiometricType {
-        lock.lock()
-        defer { lock.unlock() }
-        return capabilityDetector.detectBiometricType()
+        queue.sync {
+            capabilityDetector.detectBiometricType()
+        }
     }
     
     /// Checks if biometric authentication is available and enrolled.
     /// - Returns: `true` if biometric authentication can be used, `false` otherwise
     public func isBiometricAvailable() -> Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        return capabilityDetector.isBiometricAvailable()
+        queue.sync {
+            capabilityDetector.isBiometricAvailable()
+        }
     }
     
     /// Performs biometric authentication.
     /// - Parameters:
     ///   - reason: Message shown to user in the authentication prompt
-    ///   - fallbackTitle: Custom fallback button title (ignored in biometrics-only mode)
     ///   - completion: Called on main thread with authentication result
     public func authenticate(
         reason: String = "Authenticate to continue",
-        fallbackTitle: String? = nil,
         completion: @escaping (Result<Void, BiometricError>) -> Void
     ) {
-        lock.lock()
-        
-        let type = capabilityDetector.detectBiometricType()
-        guard type != .none else {
-            lock.unlock()
-            completion(.failure(.notAvailable))
-            return
+        // Work on serial queue to keep internal state usage consistent
+        queue.async { [capabilityDetector, authenticator] in
+            let type = capabilityDetector.detectBiometricType()
+            guard type != .none else {
+                DispatchQueue.main.async {
+                    completion(.failure(.notAvailable))
+                }
+                return
+            }
+            
+            let trimmed = reason.trimmingCharacters(in: .whitespacesAndNewlines)
+            let reasonToUse = trimmed.isEmpty ? "Authenticate to continue" : trimmed
+            
+            authenticator.authenticate(
+                reason: reasonToUse,
+                completion: completion
+            )
         }
-        
-        let reasonToUse = reason.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            ? "Authenticate to continue"
-            : reason
-        
-        authenticator.authenticate(
-            reason: reasonToUse,
-            fallbackTitle: fallbackTitle,
-            completion: completion
-        )
-        
-        lock.unlock()
     }
 }
 

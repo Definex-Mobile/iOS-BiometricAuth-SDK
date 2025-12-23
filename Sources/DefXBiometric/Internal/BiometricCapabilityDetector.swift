@@ -23,9 +23,7 @@ internal final class BiometricCapabilityDetector {
         let context = contextFactory()
         var error: NSError?
         
-        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            return .none
-        }
+        _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
         
         switch context.biometryType {
         case .faceID:
@@ -33,7 +31,7 @@ internal final class BiometricCapabilityDetector {
         case .touchID:
             return .touchID
         case .opticID:
-            return .faceID
+            return .none
         case .none:
             return .none
         @unknown default:

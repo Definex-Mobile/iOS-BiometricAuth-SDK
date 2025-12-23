@@ -26,8 +26,6 @@ final class MockLAContext: LAContextProtocol {
     /// If true, reply will be called on a background thread (to test main thread enforcement)
     var shouldReplyOnBackgroundThread: Bool = false
     
-    /// Custom title for the fallback button
-    var localizedFallbackTitle: String?
     
     // MARK: - Call Tracking
     
@@ -105,6 +103,5 @@ final class MockLAContext: LAContextProtocol {
         lastCanEvaluatePolicy = nil
         lastEvaluatePolicy = nil
         lastEvaluateReason = nil
-        localizedFallbackTitle = nil
     }
 }

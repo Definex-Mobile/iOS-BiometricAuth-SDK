@@ -35,7 +35,6 @@ The SDK uses `.deviceOwnerAuthenticationWithBiometrics` policy exclusively.
 ### What This Means
 
 - **Face ID/Touch ID only**: No passcode fallback option presented
-- **No fallback button**: `localizedFallbackTitle` is set to empty string
 - **App-level fallback**: Apps must implement password/PIN authentication when biometrics fail
 
 ### Rationale
@@ -46,7 +45,6 @@ The SDK uses `.deviceOwnerAuthenticationWithBiometrics` policy exclusively.
 
 ### API Implications
 
-- `fallbackTitle` parameter exists for API compatibility but is ignored
 - `.fallback` error case can theoretically occur (though fallback button is hidden)
 - Apps should handle `.notAvailable` and `.notEnrolled` by showing alternative auth
 

@@ -24,16 +24,13 @@ internal final class BiometricAuthenticator {
     /// Performs biometric authentication.
     /// - Parameters:
     ///   - reason: Message shown to user during authentication
-    ///   - fallbackTitle: Custom fallback button title (ignored, biometrics-only mode)
     ///   - completion: Called on main thread with result
     func authenticate(
         reason: String,
-        fallbackTitle: String?,
         completion: @escaping (Result<Void, BiometricError>) -> Void
     ) {
         // Create a new context for this authentication
-        var context = contextFactory()
-        context.localizedFallbackTitle = ""
+        let context = contextFactory()
         
         let lock = NSLock()
         var isFinished = false

@@ -16,9 +16,6 @@ internal protocol LAContextProtocol {
         localizedReason: String,
         reply: @escaping @Sendable (Bool, Error?) -> Void
     )
-    
-    /// Custom title for the fallback button
-    var localizedFallbackTitle: String? { get set }
 }
 
 // MARK: - LAContext Conformance

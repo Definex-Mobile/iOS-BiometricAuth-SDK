@@ -181,7 +181,6 @@ public func isBiometricAvailable() -> Bool
 // Authenticate user
 public func authenticate(
     reason: String = "Authenticate to continue",
-    fallbackTitle: String? = nil,  // Ignored (biometrics-only mode)
     completion: @escaping (Result<Void, BiometricError>) -> Void
 )
 ```
@@ -222,7 +221,6 @@ public enum BiometricError: Error {
 The SDK uses **biometrics-only policy** by default:
 - Face ID/Touch ID authentication only
 - No passcode fallback option shown
-- `fallbackTitle` parameter is ignored
 - Apps should provide alternative authentication (e.g., password) when biometrics fail
 
 ### Default Behavior

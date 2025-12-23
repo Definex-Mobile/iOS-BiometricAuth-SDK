@@ -469,44 +469,6 @@ final class DefXBiometricTests: XCTestCase {
         XCTAssertEqual(finalCount, 1, "Thread-safe completion guard must prevent duplicate calls even with concurrent reply invocations")
     }
     
-    // MARK: - F) Fallback Title Behavior Tests
-    
-    func testAuthenticate_SetsEmptyFallbackTitle_ToHidePasscodeOption() {
-        // Given: Authentication with nil fallback title
-        mockContext.canEvaluateResult = true
-        mockContext.biometryTypeToReturn = .faceID
-        mockContext.evaluatePolicyResult = (success: true, error: nil)
-        
-        let expectation = expectation(description: "Authentication completes")
-        
-        // When: Authenticating with nil fallbackTitle
-        biometricAuth.authenticate(reason: "Test", fallbackTitle: nil) { _ in
-            expectation.fulfill()
-        }
-        
-        // Then: localizedFallbackTitle should be set to empty string
-        waitForExpectations(timeout: 1.0)
-        XCTAssertEqual(mockContext.localizedFallbackTitle, "", "Should set localizedFallbackTitle to empty string to hide passcode fallback")
-    }
-    
-    func testAuthenticate_IgnoresCustomFallbackTitle_AlwaysUsesEmptyString() {
-        // Given: Authentication with custom fallback title
-        mockContext.canEvaluateResult = true
-        mockContext.biometryTypeToReturn = .faceID
-        mockContext.evaluatePolicyResult = (success: true, error: nil)
-        
-        let expectation = expectation(description: "Authentication completes")
-        
-        // When: Authenticating with custom fallbackTitle (should be ignored)
-        biometricAuth.authenticate(reason: "Test", fallbackTitle: "Use Password") { _ in
-            expectation.fulfill()
-        }
-        
-        // Then: localizedFallbackTitle should still be empty string (custom title ignored)
-        waitForExpectations(timeout: 1.0)
-        XCTAssertEqual(mockContext.localizedFallbackTitle, "", "Should ignore custom fallbackTitle and always use empty string to enforce biometric-only policy")
-    }
-    
     // MARK: - Additional Integration Tests
     
     func testAuthenticate_ReturnsNotAvailable_WhenBiometricTypeIsNone() {
@@ -575,7 +537,7 @@ final class DefXBiometricTests: XCTestCase {
         let expectation = expectation(description: "Authentication completes")
         
         // When: Authenticating with empty reason
-        biometricAuth.authenticate(reason: "   ", fallbackTitle: nil) { _ in
+        biometricAuth.authenticate(reason: "   ") { _ in
             expectation.fulfill()
         }
         
