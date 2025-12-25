@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="80" id="KGk-i7-Jjw" customClass="CoinCell" customModule="CoinX" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bPV-n4-sfj" customClass="ShadowView" customModule="CoinX" customModuleProvider="target">
+                        <rect key="frame" x="16" y="8" width="288" height="72"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YC8-Qt-0OD">
+                        <rect key="frame" x="16" y="8" width="288" height="72"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zub-RX-sdr">
+                                <rect key="frame" x="8" y="16" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="ksm-z3-VTU"/>
+                                    <constraint firstAttribute="height" constant="40" id="md0-Yh-pE9"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ApL-6k-4Lf" customClass="XLightItalic12Label" customModule="CoinX" customModuleProvider="target">
+                                <rect key="frame" x="56" y="15.999999999999998" width="33" height="16.333333333333329"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-LightItalic" family="Helvetica Neue" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P5I-Cx-ym3" customClass="XLightItalic12Label" customModule="CoinX" customModuleProvider="target">
+                                <rect key="frame" x="55.999999999999993" y="32.333333333333336" width="31.666666666666664" height="16.333333333333336"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-ThinItalic" family="Helvetica Neue" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QFh-mQ-OaJ" customClass="XLightItalic12Label" customModule="CoinX" customModuleProvider="target">
+                                <rect key="frame" x="247" y="15.999999999999998" width="33" height="16.333333333333329"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-LightItalic" family="Helvetica Neue" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vmw-dZ-mdn" customClass="XMedium10Label" customModule="CoinX" customModuleProvider="target">
+                                <rect key="frame" x="253" y="32.333333333333336" width="27" height="14"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="72" id="B6A-Ox-v0v"/>
+                            <constraint firstItem="QFh-mQ-OaJ" firstAttribute="top" secondItem="zub-RX-sdr" secondAttribute="top" id="EbS-QX-HrZ"/>
+                            <constraint firstItem="ApL-6k-4Lf" firstAttribute="leading" secondItem="zub-RX-sdr" secondAttribute="trailing" constant="8" id="JU1-rt-Dsl"/>
+                            <constraint firstAttribute="trailing" secondItem="Vmw-dZ-mdn" secondAttribute="trailing" constant="8" id="MKG-wv-MOn"/>
+                            <constraint firstItem="Vmw-dZ-mdn" firstAttribute="top" secondItem="QFh-mQ-OaJ" secondAttribute="bottom" id="SM0-VV-yrQ"/>
+                            <constraint firstAttribute="trailing" secondItem="QFh-mQ-OaJ" secondAttribute="trailing" constant="8" id="VEM-gO-asn"/>
+                            <constraint firstItem="ApL-6k-4Lf" firstAttribute="top" secondItem="zub-RX-sdr" secondAttribute="top" id="bGM-mq-U0T"/>
+                            <constraint firstItem="zub-RX-sdr" firstAttribute="leading" secondItem="YC8-Qt-0OD" secondAttribute="leading" constant="8" id="fmA-Iu-jSc"/>
+                            <constraint firstItem="zub-RX-sdr" firstAttribute="centerY" secondItem="YC8-Qt-0OD" secondAttribute="centerY" id="lMo-XZ-3dH"/>
+                            <constraint firstItem="P5I-Cx-ym3" firstAttribute="leading" secondItem="zub-RX-sdr" secondAttribute="trailing" constant="8" id="pd0-Re-eIc"/>
+                            <constraint firstItem="P5I-Cx-ym3" firstAttribute="top" secondItem="ApL-6k-4Lf" secondAttribute="bottom" id="s6A-45-LV0"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="bPV-n4-sfj" firstAttribute="centerX" secondItem="YC8-Qt-0OD" secondAttribute="centerX" id="1Zc-RD-nUD"/>
+                    <constraint firstItem="bPV-n4-sfj" firstAttribute="height" secondItem="YC8-Qt-0OD" secondAttribute="height" id="H3a-Xa-poH"/>
+                    <constraint firstAttribute="trailing" secondItem="YC8-Qt-0OD" secondAttribute="trailing" constant="16" id="Q0I-tW-sma"/>
+                    <constraint firstItem="YC8-Qt-0OD" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="iM9-gE-aA5"/>
+                    <constraint firstItem="bPV-n4-sfj" firstAttribute="width" secondItem="YC8-Qt-0OD" secondAttribute="width" id="osp-7U-19g"/>
+                    <constraint firstAttribute="bottom" secondItem="YC8-Qt-0OD" secondAttribute="bottom" id="xzx-c2-WTf"/>
+                    <constraint firstItem="bPV-n4-sfj" firstAttribute="centerY" secondItem="YC8-Qt-0OD" secondAttribute="centerY" id="yh0-8c-EMi"/>
+                    <constraint firstItem="YC8-Qt-0OD" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="zUP-uF-xEK"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="coinImageView" destination="zub-RX-sdr" id="1DV-en-Qbm"/>
+                <outlet property="coinLongnameLabel" destination="ApL-6k-4Lf" id="sc0-sP-Pd3"/>
+                <outlet property="coinPriceLabel" destination="QFh-mQ-OaJ" id="KZF-93-be4"/>
+                <outlet property="coinShortNameLabel" destination="P5I-Cx-ym3" id="cJ3-GC-2rH"/>
+                <outlet property="contanierView" destination="YC8-Qt-0OD" id="NhG-ap-0ib"/>
+                <outlet property="percentageLabel" destination="Vmw-dZ-mdn" id="6OJ-SV-f1U"/>
+            </connections>
+            <point key="canvasLocation" x="-76.33587786259541" y="1.4084507042253522"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

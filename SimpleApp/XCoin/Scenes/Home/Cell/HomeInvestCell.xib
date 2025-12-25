@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="151" id="KGk-i7-Jjw" customClass="HomeInvestCell" customModule="CoinX" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="417" height="151"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="417" height="151"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0oT-0T-Q9X">
+                        <rect key="frame" x="16" y="0.0" width="385" height="151"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="homeInvestCellBGImage" translatesAutoresizingMaskIntoConstraints="NO" id="zTb-tC-Bcd">
+                                <rect key="frame" x="0.0" y="0.0" width="385" height="151"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="homeInvestCellBGMaskImage" translatesAutoresizingMaskIntoConstraints="NO" id="Mtn-bK-pnP">
+                                <rect key="frame" x="115.66666666666666" y="0.0" width="269.33333333333337" height="151"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ejO-Nu-lxe" customClass="XLightItalic12Label" customModule="CoinX" customModuleProvider="target">
+                                <rect key="frame" x="18" y="24" width="67" height="20"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Make you first Investment today" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GN9-5T-U2E" customClass="XMedium18Label" customModule="CoinX" customModuleProvider="target">
+                                <rect key="frame" x="18" y="52" width="359" height="20"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M8d-99-uqI" customClass="XButton" customModule="CoinX" customModuleProvider="target">
+                                <rect key="frame" x="16" y="88" width="46" height="30"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Button"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Invest Now"/>
+                                </userDefinedRuntimeAttributes>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="zTb-tC-Bcd" firstAttribute="top" secondItem="0oT-0T-Q9X" secondAttribute="top" id="2tw-ri-8j8"/>
+                            <constraint firstItem="M8d-99-uqI" firstAttribute="leading" secondItem="0oT-0T-Q9X" secondAttribute="leading" constant="16" id="6hu-uN-vau"/>
+                            <constraint firstItem="Mtn-bK-pnP" firstAttribute="width" secondItem="zTb-tC-Bcd" secondAttribute="width" multiplier="0.7" id="EXg-Fj-eX3"/>
+                            <constraint firstItem="M8d-99-uqI" firstAttribute="top" secondItem="GN9-5T-U2E" secondAttribute="bottom" constant="16" id="PC7-MY-XWj"/>
+                            <constraint firstItem="Mtn-bK-pnP" firstAttribute="top" secondItem="0oT-0T-Q9X" secondAttribute="top" id="S10-rW-ash"/>
+                            <constraint firstItem="GN9-5T-U2E" firstAttribute="top" secondItem="ejO-Nu-lxe" secondAttribute="bottom" constant="8" id="TFA-7f-AnA"/>
+                            <constraint firstItem="ejO-Nu-lxe" firstAttribute="leading" secondItem="0oT-0T-Q9X" secondAttribute="leading" constant="18" id="VvD-Xb-cxT"/>
+                            <constraint firstAttribute="trailing" secondItem="Mtn-bK-pnP" secondAttribute="trailing" id="Xdl-AX-j7k"/>
+                            <constraint firstItem="zTb-tC-Bcd" firstAttribute="leading" secondItem="0oT-0T-Q9X" secondAttribute="leading" id="a7h-jA-WkS"/>
+                            <constraint firstAttribute="bottom" secondItem="zTb-tC-Bcd" secondAttribute="bottom" id="dKy-xJ-fXB"/>
+                            <constraint firstAttribute="bottom" secondItem="Mtn-bK-pnP" secondAttribute="bottom" id="dzH-A9-b3t"/>
+                            <constraint firstItem="GN9-5T-U2E" firstAttribute="leading" secondItem="0oT-0T-Q9X" secondAttribute="leading" constant="18" id="hAc-Hp-RKU"/>
+                            <constraint firstAttribute="trailing" secondItem="GN9-5T-U2E" secondAttribute="trailing" constant="8" id="pPu-rV-aje"/>
+                            <constraint firstAttribute="trailing" secondItem="zTb-tC-Bcd" secondAttribute="trailing" id="wda-81-sYM"/>
+                            <constraint firstItem="ejO-Nu-lxe" firstAttribute="top" secondItem="0oT-0T-Q9X" secondAttribute="top" constant="24" id="xJk-cj-KCw"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="0oT-0T-Q9X" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Njg-lK-cKS"/>
+                    <constraint firstItem="0oT-0T-Q9X" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="PqR-H0-O9n"/>
+                    <constraint firstAttribute="trailing" secondItem="0oT-0T-Q9X" secondAttribute="trailing" constant="16" id="pNu-qg-YnB"/>
+                    <constraint firstAttribute="bottom" secondItem="0oT-0T-Q9X" secondAttribute="bottom" id="r6L-8b-RoE"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="investButtonContainerView" destination="M8d-99-uqI" id="03q-Ef-fsE"/>
+            </connections>
+            <point key="canvasLocation" x="197.70992366412213" y="26.408450704225352"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="homeInvestCellBGImage" width="351" height="149"/>
+        <image name="homeInvestCellBGMaskImage" width="288" height="147"/>
+    </resources>
+</document>

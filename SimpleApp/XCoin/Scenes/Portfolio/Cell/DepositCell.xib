@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22685"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="50" id="KGk-i7-Jjw" customClass="DepositCell" customModule="XCoin" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gjf-GE-HpJ">
+                        <rect key="frame" x="16" y="0.0" width="288" height="50"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="w6O-zC-qvW">
+                                <rect key="frame" x="0.0" y="0.0" width="288" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8gN-3z-J4K" customClass="XButton" customModule="XCoin" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="136" height="50"/>
+                                        <color key="backgroundColor" name="Primary"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Deposit INR">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="shapeAdapter">
+                                                <integer key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Deposit INR"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="depositButtonAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Ryd-z8-EHE"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q2L-Ie-zuO" customClass="XButton" customModule="XCoin" customModuleProvider="target">
+                                        <rect key="frame" x="152" y="0.0" width="136" height="50"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Withdraw INR">
+                                            <color key="titleColor" name="Primary"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="shapeAdapter">
+                                                <integer key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="textColor">
+                                                <color key="value" name="Primary"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="buttonText" value="Withdraw INR"/>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="withdrawButtonAction:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="hJn-Wh-hDj"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="w6O-zC-qvW" firstAttribute="leading" secondItem="Gjf-GE-HpJ" secondAttribute="leading" id="0kX-9y-2ww"/>
+                            <constraint firstAttribute="bottom" secondItem="w6O-zC-qvW" secondAttribute="bottom" id="Td1-S8-kO2"/>
+                            <constraint firstItem="w6O-zC-qvW" firstAttribute="top" secondItem="Gjf-GE-HpJ" secondAttribute="top" id="tfu-K2-heX"/>
+                            <constraint firstAttribute="trailing" secondItem="w6O-zC-qvW" secondAttribute="trailing" id="yvU-Z6-TJn"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Gjf-GE-HpJ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="A5q-xw-2Mt"/>
+                    <constraint firstAttribute="bottom" secondItem="Gjf-GE-HpJ" secondAttribute="bottom" id="Hik-YM-aAM"/>
+                    <constraint firstItem="Gjf-GE-HpJ" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="NHw-41-kWk"/>
+                    <constraint firstAttribute="trailing" secondItem="Gjf-GE-HpJ" secondAttribute="trailing" constant="16" id="ajF-AC-5Ko"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="depositButton" destination="8gN-3z-J4K" id="Sjp-zB-8NN"/>
+                <outlet property="withdrawButton" destination="q2L-Ie-zuO" id="sfk-5E-vLl"/>
+            </connections>
+            <point key="canvasLocation" x="-76.33587786259541" y="-9.1549295774647899"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <namedColor name="Primary">
+            <color red="0.0" green="0.38823529411764707" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
