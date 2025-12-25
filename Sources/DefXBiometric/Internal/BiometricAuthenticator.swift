@@ -13,6 +13,9 @@ internal final class BiometricAuthenticator {
     // Context factory to create new contexts for each authentication
     private let contextFactory: () -> LAContextProtocol
     
+    // Serial queue for thread-safe access
+    private let finishQueue = DispatchQueue(label: "com.definex.defxbiometric.authenticator.finish")
+
     // MARK: - Initialization
     
     init(contextFactory: @escaping () -> LAContextProtocol = { LAContext() }) {
@@ -30,21 +33,20 @@ internal final class BiometricAuthenticator {
         completion: @escaping (Result<Void, BiometricError>) -> Void
     ) {
         // Create a new context for this authentication
-        let context = contextFactory()
+        var context = contextFactory()
         
-        let lock = NSLock()
+        // Disable passcode fallback UI by setting empty fallback title
+        // Without this, iOS shows "Enter Password" button by default
+        context.localizedFallbackTitle = ""
+        
         var isFinished = false
         let finish: (Result<Void, BiometricError>) -> Void = { result in
-            lock.lock()
-            defer { lock.unlock() }
-            
-            guard !isFinished else { return }
-            isFinished = true
-            
-            DispatchQueue.main.async {
-                completion(result)
-            }
-        }
+             self.finishQueue.async {
+                 guard !isFinished else { return }
+                 isFinished = true
+                 DispatchQueue.main.async { completion(result) }
+             }
+         }
         
         // Evaluate biometrics-only policy (no passcode fallback)
         // iOS will handle retry attempts (2-3 tries) within the native prompt

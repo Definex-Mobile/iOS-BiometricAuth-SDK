@@ -10,6 +10,9 @@ internal protocol LAContextProtocol {
     /// Returns the biometry type available on the device
     var biometryType: LABiometryType { get }
     
+    /// Title for the fallback button. Set to empty string to hide the fallback button.
+    var localizedFallbackTitle: String? { get set }
+    
     /// Evaluates the policy asynchronously
     func evaluatePolicy(
         _ policy: LAPolicy,

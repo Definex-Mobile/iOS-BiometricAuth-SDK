@@ -29,8 +29,9 @@ final class DefXBiometricTests: XCTestCase {
             return self.mockContext
         })
         
-        // Create DefXBiometricAuth with injected dependencies
+        // Create DefXBiometricAuth with injected dependencies (default config = no security)
         biometricAuth = DefXBiometricAuth(
+            configuration: .default,
             capabilityDetector: capabilityDetector,
             authenticator: authenticator
         )
@@ -705,6 +706,173 @@ final class DefXBiometricTests: XCTestCase {
         
         // Verify no crashes occurred (test will fail if deadlock or crash happens)
         XCTAssertTrue(true, "All concurrent operations completed successfully")
+    }
+    
+    // MARK: - F) Security Policy Tests
+    
+    func testAuthenticate_NoSecurityChecks_WhenConfigurationIsDefault() {
+        // Given: Default configuration (no security policy)
+        mockContext.canEvaluateResult = true
+        mockContext.biometryTypeToReturn = .faceID
+        mockContext.evaluatePolicyResult = (success: true, error: nil)
+        
+        let expectation = expectation(description: "Authentication completes")
+        var capturedResult: Result<Void, BiometricError>?
+        
+        // When: Authenticating without security policy
+        biometricAuth.authenticate(reason: "Test") { result in
+            capturedResult = result
+            expectation.fulfill()
+        }
+        
+        // Then: Should succeed without security checks (even on simulator)
+        waitForExpectations(timeout: 1.0)
+        
+        guard case .success = capturedResult else {
+            XCTFail("Expected success when no security policy is set")
+            return
+        }
+        
+        XCTAssertEqual(mockContext.evaluatePolicyCallCount, 1, "Should proceed to biometric auth")
+    }
+    
+    func testAuthenticate_BlocksOnSimulator_WhenStrictPolicyEnabled() {
+        // Given: Strict security policy that blocks simulator
+        let secureAuth = DefXBiometricAuth(
+            configuration: .secure, // Uses strict policy
+            capabilityDetector: capabilityDetector,
+            authenticator: authenticator
+        )
+        
+        mockContext.canEvaluateResult = true
+        mockContext.biometryTypeToReturn = .faceID
+        
+        let expectation = expectation(description: "Authentication completes")
+        var capturedResult: Result<Void, BiometricError>?
+        
+        // When: Authenticating with strict policy (on simulator during tests)
+        secureAuth.authenticate(reason: "Test") { result in
+            capturedResult = result
+            expectation.fulfill()
+        }
+        
+        // Then: Should fail with securityRiskDetected on simulator
+        waitForExpectations(timeout: 1.0)
+        
+        guard case .failure(let error) = capturedResult else {
+            XCTFail("Expected failure when security risk is detected")
+            return
+        }
+        
+        // On simulator, should detect simulator risk
+        #if targetEnvironment(simulator)
+        if case .securityRiskDetected(let riskResult) = error {
+            XCTAssertTrue(riskResult.detectedRisks.contains(.simulator), 
+                         "Should detect simulator risk")
+        } else {
+            XCTFail("Expected securityRiskDetected error on simulator with strict policy")
+        }
+        #endif
+        
+        // Should not proceed to biometric auth
+        XCTAssertEqual(mockContext.evaluatePolicyCallCount, 0, "Should not call evaluatePolicy when security risk blocks")
+    }
+    
+    func testAuthenticate_OverridePolicy_TakePrecedenceOverConfiguration() {
+        // Given: Auth with default config (no security) but override with strict policy
+        mockContext.canEvaluateResult = true
+        mockContext.biometryTypeToReturn = .faceID
+        mockContext.evaluatePolicyResult = (success: true, error: nil)
+        
+        let expectation = expectation(description: "Authentication completes")
+        var capturedResult: Result<Void, BiometricError>?
+        
+        // When: Authenticating with override policy
+        biometricAuth.authenticate(
+            reason: "Test",
+            securityPolicy: .strict  // Override default config
+        ) { result in
+            capturedResult = result
+            expectation.fulfill()
+        }
+        
+        // Then: Should apply strict policy even though config has none
+        waitForExpectations(timeout: 1.0)
+        
+        #if targetEnvironment(simulator)
+        // On simulator, strict policy should block
+        guard case .failure(let error) = capturedResult else {
+            XCTFail("Expected failure with strict override on simulator")
+            return
+        }
+        
+        if case .securityRiskDetected(let riskResult) = error {
+            XCTAssertTrue(riskResult.detectedRisks.contains(.simulator),
+                         "Override policy should be applied")
+        } else {
+            XCTFail("Expected securityRiskDetected with strict override")
+        }
+        #endif
+    }
+    
+    func testAuthenticate_AllowsAuthentication_WhenPermissivePolicyAndOnlySimulatorRisk() {
+        // Given: Permissive policy (only blocks jailbreak/hooking, not simulator)
+        let permissiveAuth = DefXBiometricAuth(
+            configuration: DefXBiometricConfiguration(securityPolicy: .permissive),
+            capabilityDetector: capabilityDetector,
+            authenticator: authenticator
+        )
+        
+        mockContext.canEvaluateResult = true
+        mockContext.biometryTypeToReturn = .faceID
+        mockContext.evaluatePolicyResult = (success: true, error: nil)
+        
+        let expectation = expectation(description: "Authentication completes")
+        var capturedResult: Result<Void, BiometricError>?
+        
+        // When: Authenticating with permissive policy on simulator
+        permissiveAuth.authenticate(reason: "Test") { result in
+            capturedResult = result
+            expectation.fulfill()
+        }
+        
+        // Then: Should succeed (simulator not blocked by permissive)
+        waitForExpectations(timeout: 1.0)
+        
+        // Permissive policy allows simulator, so should succeed
+        guard case .success = capturedResult else {
+            XCTFail("Expected success with permissive policy on simulator")
+            return
+        }
+        
+        XCTAssertEqual(mockContext.evaluatePolicyCallCount, 1, "Should proceed to biometric auth")
+    }
+    
+    func testSecurityRiskResult_HasRisk_ReturnsTrueWhenRisksDetected() {
+        // Given: Risk result with detected risks
+        let riskResult = SecurityRiskResult(detectedRisks: [.simulator, .jailbreak])
+        
+        // Then: hasRisk should be true
+        XCTAssertTrue(riskResult.hasRisk, "Should return true when risks are detected")
+        XCTAssertEqual(riskResult.detectedRisks.count, 2, "Should contain both risks")
+    }
+    
+    func testSecurityRiskResult_HasRisk_ReturnsFalseWhenNoRisks() {
+        // Given: Risk result with no risks
+        let riskResult = SecurityRiskResult(detectedRisks: [])
+        
+        // Then: hasRisk should be false
+        XCTAssertFalse(riskResult.hasRisk, "Should return false when no risks detected")
+    }
+    
+    func testBiometricError_SecurityRiskDetected_HasCorrectIdentifier() {
+        // Given: Security risk error
+        let riskResult = SecurityRiskResult(detectedRisks: [.simulator])
+        let error = BiometricError.securityRiskDetected(riskResult)
+        
+        // Then: Should have correct identifier
+        XCTAssertEqual(error.identifier, "biometric_error_security_risk",
+                      "Security risk error should have correct identifier")
     }
 }
 

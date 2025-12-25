@@ -17,6 +17,9 @@ final class MockLAContext: LAContextProtocol {
     /// Controls the biometry type returned by the context
     var biometryTypeToReturn: LABiometryType = .faceID
     
+    /// Stores the localized fallback title (protocol requirement)
+    var localizedFallbackTitle: String?
+    
     /// Controls the result of evaluatePolicy (success flag and optional error)
     var evaluatePolicyResult: (success: Bool, error: Error?) = (true, nil)
     

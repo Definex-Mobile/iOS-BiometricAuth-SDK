@@ -35,6 +35,7 @@ A production-ready, clean, and testable iOS Biometric Authentication SDK for Fac
 - 📦 **Multiple Distribution** - SPM, CocoaPods
 - 🔒 **Semantic Error Types** - Flexible error handling for UI
 - 🛡️ **Access Control** - Internal classes protected from external access
+- 🔐 **Optional Security Checks** - Runtime jailbreak/debugger detection (opt-in, disabled by default)
 
 ---
 
@@ -169,8 +170,11 @@ DefXBiometricAuth.shared.authenticate(
 Main entry point for biometric authentication.
 
 ```swift
-// Shared singleton instance
+// Shared singleton instance (with default configuration)
 public static let shared: DefXBiometricAuth
+
+// Initialize with custom configuration
+public init(configuration: DefXBiometricConfiguration = .default)
 
 // Get available biometric type
 public func availableBiometricType() -> BiometricType
@@ -178,9 +182,10 @@ public func availableBiometricType() -> BiometricType
 // Check if biometric is available
 public func isBiometricAvailable() -> Bool
 
-// Authenticate user
+// Authenticate user with optional security policy override
 public func authenticate(
     reason: String = "Authenticate to continue",
+    securityPolicy: SecurityPolicy? = nil,
     completion: @escaping (Result<Void, BiometricError>) -> Void
 )
 ```
@@ -199,13 +204,15 @@ public enum BiometricType {
 
 ```swift
 public enum BiometricError: Error {
-    case notAvailable        // Biometric not available
-    case notEnrolled         // No biometric enrolled
-    case lockout             // Too many failed attempts
-    case cancelled           // User cancelled
-    case fallback            // User chose fallback
-    case systemError(String) // System error
-    case unknown             // Unknown error
+    case notAvailable                       // Biometric not available
+    case notEnrolled                        // No biometric enrolled
+    case lockout                            // Too many failed attempts
+    case cancelled                          // User cancelled
+    case fallback                           // User chose fallback
+    case authenticationFailed               // Wrong biometric
+    case securityRiskDetected(SecurityRiskResult)  // Security risk blocked auth
+    case systemError(String)                // System error
+    case unknown                            // Unknown error
     
     // Stable identifier for localization
     public var identifier: String
@@ -218,15 +225,90 @@ public enum BiometricError: Error {
 
 ### Biometrics-Only Mode
 
-The SDK uses **biometrics-only policy** by default:
+The SDK uses **biometrics-only policy** with no passcode fallback:
+
+**Technical Implementation:**
+- Uses `LAPolicy.deviceOwnerAuthenticationWithBiometrics`
+- Sets `localizedFallbackTitle = ""` to hide system fallback button
+- No "Enter Password" or "Use Passcode" button will appear in the biometric prompt
+
+**Behavior:**
 - Face ID/Touch ID authentication only
-- No passcode fallback option shown
-- Apps should provide alternative authentication (e.g., password) when biometrics fail
+- User gets 2-3 biometric attempts (iOS handles retries automatically)
+- If biometric fails, authentication is cancelled
+- Apps **must** provide alternative authentication (e.g., password) when biometrics fail
+
+**Why No Passcode Fallback?**
+This design ensures:
+- Clear separation between biometric and password authentication
+- Apps have full control over fallback logic
+- Better UX with consistent authentication flows
+
+### Security Checks (Optional, Disabled by Default)
+
+The SDK includes **opt-in runtime security checks** to detect potentially compromised environments:
+
+**Available Detections:**
+- **Jailbreak** - Device is jailbroken/rooted
+- **Simulator** - Running on simulator (not physical device)
+- **Debugger** - Debugger is attached to the process
+- **Hooking** - Runtime injection detected (e.g., Frida, Cycript)
+
+**Default Behavior:** Security checks are **disabled by default**. This ensures maximum compatibility and allows apps to authenticate in development/testing environments.
+
+**Enabling Security Checks:**
+
+```swift
+// Option 1: Configure at initialization with strict policy
+let secureAuth = DefXBiometricAuth(
+    configuration: DefXBiometricConfiguration(securityPolicy: .strict)
+)
+
+secureAuth.authenticate(reason: "Secure login") { result in
+    switch result {
+    case .success:
+        print("Authenticated successfully")
+        
+    case .failure(.securityRiskDetected(let riskResult)):
+        print("Security risk detected: \(riskResult.detectedRisks)")
+        // Handle security risk (e.g., show warning, block access)
+        
+    case .failure(let error):
+        print("Authentication failed: \(error)")
+    }
+}
+
+// Option 2: Override security policy per authentication call
+DefXBiometricAuth.shared.authenticate(
+    reason: "Sensitive operation",
+    securityPolicy: .strict  // Override default
+) { result in
+    // Handle result
+}
+
+// Option 3: Use permissive policy (only blocks jailbreak/hooking)
+let auth = DefXBiometricAuth(
+    configuration: DefXBiometricConfiguration(securityPolicy: .permissive)
+)
+```
+
+**Available Security Policies:**
+- `.none` - No security checks (explicit)
+- `.permissive` - Only blocks jailbreak and hooking
+- `.strict` - Blocks all risks (jailbreak, simulator, debugger, hooking)
+- Custom - Create your own: `SecurityPolicy(blockedRisks: [.jailbreak])`
+
+**Important Notes:**
+- Using `.strict` policy will block authentication on simulators and during debugging
+- Use `.permissive` or custom policies for development/testing
+- Security checks add minimal overhead (< 10ms)
+- For production apps with sensitive operations, consider using `.strict` or `.permissive`
 
 ### Default Behavior
 
 ```swift
 // Uses default reason: "Authenticate to continue"
+// No security checks (default config)
 DefXBiometricAuth.shared.authenticate { result in
     // Handle result
 }
@@ -256,6 +338,11 @@ case .notAvailable, .notEnrolled:
 case .lockout:
     // Guide user to unlock device
     showAlert("Too many attempts. Please unlock your device.")
+    
+case .securityRiskDetected(let riskResult):
+    // Security risk detected (only if security policy enabled)
+    print("Detected risks: \(riskResult.detectedRisks)")
+    showSecurityAlert("Authentication blocked due to security concerns")
     
 case .systemError(let message):
     print("System error: \(message)")
@@ -327,8 +414,7 @@ DefXBiometric uses iOS LocalAuthentication framework with system-level security:
 
 For licensing, custom features, or enterprise support:
 
-**DefineX Technology Inc.**
-- 📧 Email: ekin.demir@teamdefinex.com
+**DefineX - Consulting, Technology & Labs**
 - 🌐 Website: https://www.definex.com
 - 📱 Mobile SDKs: https://github.com/Definex-Mobile
 
@@ -350,6 +436,3 @@ This software is proprietary and confidential. Unauthorized copying, distributio
 
 For licensing inquiries: info@definex.com
 
----
-
-**Made with by DefineX Mobile Team**

@@ -20,6 +20,9 @@ public enum BiometricError: Error, Equatable {
     /// Biometric authentication failed (wrong face/fingerprint)
     case authenticationFailed
     
+    /// Security risk detected, authentication blocked
+    case securityRiskDetected(SecurityRiskResult)
+    
     /// A system error occurred
     case systemError(String)
     
@@ -38,6 +41,7 @@ extension BiometricError {
         case .cancelled: return "biometric_error_cancelled"
         case .fallback: return "biometric_error_fallback"
         case .authenticationFailed: return "biometric_error_authentication_failed"
+        case .securityRiskDetected: return "biometric_error_security_risk"
         case .systemError: return "biometric_error_system"
         case .unknown: return "biometric_error_unknown"
         }
