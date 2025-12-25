@@ -1,4 +1,0 @@
-[submodule "SimpleApp"]
-	path = SimpleApp
-	url = https://github.com/Definex-Mobile/XCoins-IOS.git
-	branch = sdk/iOS/defXBiometric-simple-app
