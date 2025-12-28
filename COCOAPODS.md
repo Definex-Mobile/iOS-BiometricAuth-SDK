@@ -17,23 +17,22 @@ platform :ios, '12.0'
 use_frameworks!
 
 target 'YourAppName' do
-  # From Git repository (recommended)
-  pod 'DefXBiometric', :git => 'https://github.com/ekinbarisdmr/iOS-BiometricAuth-SDK.git', :tag => '1.0.0'
-  
-  # Or use local path for development
-  # pod 'DefXBiometric', :path => '../DefXBiometric'
+  pod 'DefXBiometric', '1.0.1'
 end
 ```
 
-**Path Options:**
-- **Git repository**: `:git => 'URL', :tag => 'VERSION'`
-- **Local development**: `:path => '../DefXBiometric'` or `:path => '/path/to/DefXBiometric'`
+**Note:** DefXBiometric is published on [CocoaPods Trunk](https://cocoapods.org/pods/DefXBiometric). No need to specify git URL or path.
 
 ### Step 2: Install Pods
 
 ```bash
-pod install
+pod install --repo-update
 ```
+
+This command will:
+- Update your local CocoaPods specs repository
+- Download and integrate DefXBiometric SDK
+- Generate `.xcworkspace` file
 
 ### Step 3: Open Workspace
 
@@ -73,9 +72,40 @@ if DefXBiometricAuth.shared.isBiometricAvailable() {
 ### "Unable to find a specification for DefXBiometric"
 
 **Solution:**
-- Verify `:git` URL or `:path` is correct
-- Ensure `DefXBiometric.podspec` exists in the path
-- Run `pod install --repo-update`
+
+```bash
+pod install --repo-update
+```
+
+If still failing, manually update CocoaPods repository:
+
+```bash
+pod repo update
+pod install
+```
+
+### Build/Run Error: rsync "Operation not permitted"
+
+If you encounter errors like:
+- `rsync: mkstemp "..." failed: Operation not permitted`
+- Build phase script execution errors
+- Permission denied during build
+
+**Solution:**
+
+1. Open your app target in Xcode
+2. Go to **Build Settings**
+3. Search for **"User Script Sandboxing"**
+4. Set **`ENABLE_USER_SCRIPT_SANDBOXING`** to **`NO`**
+
+Then clean and rebuild:
+
+```bash
+# In Xcode: Product → Clean Build Folder (⇧⌘K)
+
+# Or delete DerivedData:
+rm -rf ~/Library/Developer/Xcode/DerivedData
+```
 
 ### Build Errors After Pod Install
 
@@ -83,7 +113,7 @@ if DefXBiometricAuth.shared.isBiometricAvailable() {
 
 ```bash
 pod deintegrate
-pod install
+pod install --repo-update
 ```
 
 ### "The sandbox is not in sync with the Podfile.lock"
@@ -104,53 +134,43 @@ pod install
   rm -rf ~/Library/Developer/Xcode/DerivedData
   ```
 
-### CocoaPods Code Signing Issues
-
-If you encounter `_CodeSignature` or rsync permission errors:
-
-```ruby
-# Add to Podfile
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
-    end
-  end
-end
-```
-
 ---
 
 ## Updating the SDK
 
-### Update to Latest Version
+### Update to Specific Version
+
+Edit your `Podfile` to specify the new version:
+
+```ruby
+pod 'DefXBiometric', '1.1.0'  # Update version number
+```
+
+Then run:
 
 ```bash
-pod update DefXBiometric
+pod install --repo-update
+```
+
+### Update to Latest Available Version
+
+Change your Podfile to use version specifier:
+
+```ruby
+pod 'DefXBiometric', '~> 1.0'  # Latest 1.x version
+```
+
+Then run:
+
+```bash
+pod update DefXBiometric --repo-update
 ```
 
 ### Force Reinstall
 
 ```bash
 pod deintegrate
-pod install
-```
-
----
-
-## Local Development
-
-For local SDK development, use path-based pod:
-
-```ruby
-# Podfile
-pod 'DefXBiometric', :path => '../DefXBiometric'
-```
-
-After making changes to the SDK:
-
-```bash
-pod update DefXBiometric
+pod install --repo-update
 ```
 
 ---
@@ -160,8 +180,8 @@ pod update DefXBiometric
 1. ✅ Always open `.xcworkspace` after pod install
 2. ✅ Commit `Podfile.lock` to version control
 3. ✅ Add `Pods/` to `.gitignore`
-4. ✅ Use specific version tags for production
-5. ✅ Use local path only for development
+4. ✅ Use specific version numbers for production (`pod 'DefXBiometric', '1.0.1'`)
+5. ✅ Run `pod install --repo-update` to ensure latest specs
 
 ---
 

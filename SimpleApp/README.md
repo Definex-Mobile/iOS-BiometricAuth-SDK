@@ -29,18 +29,38 @@ The repository contains **one** Xcode project file: `XCoin.xcodeproj`. A duplica
 
 ## Installation
 
-### Swift Package Manager (SPM)
+### Option 1: Swift Package Manager (Recommended)
 
-The project is already configured to use DefXBiometric as a local SPM package.
+Add DefXBiometric SDK to your project via remote repository:
 
-1. Open `XCoin.xcodeproj`
-2. The package reference points to `../DefXBiometric` (local path)
-3. Build and run
+#### Via Xcode UI:
 
-If you need to add it manually:
-- File → Add Package Dependencies → Add Local → Select `DefXBiometric` folder
+1. Open `XCoin.xcodeproj` in Xcode
+2. **File → Add Package Dependencies...**
+3. Enter repository URL:
+   ```
+   https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git
+   ```
+4. **Dependency Rule:** Up to Next Major Version `1.0.1`
+5. Click **Add Package**
+6. Build and run
 
-### CocoaPods
+#### Via Package.swift:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git", from: "1.0.1")
+]
+```
+
+Then import in your code:
+```swift
+import DefXBiometric
+```
+
+### Option 2: CocoaPods
+
+DefXBiometric is available through [CocoaPods](https://cocoapods.org/pods/DefXBiometric).
 
 1. Install CocoaPods if needed:
    ```bash
@@ -49,20 +69,53 @@ If you need to add it manually:
 
 2. In the `XCoin` directory, create/update `Podfile`:
    ```ruby
-   platform :ios, '13.0'
+   platform :ios, '12.0'
    use_frameworks!
 
    target 'XCoin' do
-     pod 'DefXBiometric', :path => '../DefXBiometric'
+     pod 'DefXBiometric', '1.0.1'
    end
    ```
 
-3. Install:
+3. Install dependencies:
    ```bash
-   pod install
+   pod install --repo-update
    ```
 
-4. Open `XCoin.xcworkspace` (not `.xcodeproj`)
+4. **Important:** Open `XCoin.xcworkspace` (not `.xcodeproj`)
+
+### Local Development (Contributors Only)
+
+If you're contributing to the SDK and need to test local changes:
+
+**SPM:**
+- File → Add Package Dependencies → Add Local → Select `../DefXBiometric` folder
+- The demo project may already be configured with local package reference
+
+**CocoaPods:**
+```ruby
+pod 'DefXBiometric', :path => '../DefXBiometric'
+```
+
+**Note:** External users should use remote installation methods above.
+
+---
+
+## Configuration
+
+### Required: Face ID Permission
+
+The demo app uses biometric authentication. You **must** add Face ID usage description to `Info.plist`:
+
+```xml
+<key>NSFaceIDUsageDescription</key>
+<string>XCoin uses Face ID to secure your portfolio access</string>
+```
+
+**Notes:**
+- This permission is **required** by Apple for Face ID functionality
+- Touch ID does not require a usage description
+- The XCoin demo already includes this in `SystemFiles/Info.plist`
 
 ---
 
@@ -189,9 +242,18 @@ In `DEBUG` builds, the SDK simulates jailbreak/hooking detection for testing pur
 ## Troubleshooting
 
 ### Build Fails: "Unable to find DefXBiometric"
+
+**For remote SPM installation:**
+- Clean build folder: **Product → Clean Build Folder** (⇧⌘K)
+- Reset package caches: **File → Packages → Reset Package Caches**
+- Verify package dependency in Xcode project settings
+
+**For CocoaPods:**
+- Run `pod install --repo-update`
+- Ensure you're opening `.xcworkspace`, not `.xcodeproj`
+
+**For local development (contributors):**
 - Ensure local package path is correct: `../DefXBiometric` (relative to `XCoin.xcodeproj`)
-- Clean build folder: Product → Clean Build Folder
-- Re-resolve packages: File → Packages → Reset Package Caches
 
 ### Biometric Prompt Not Showing
 - Security check likely failed. Check overlay error message.

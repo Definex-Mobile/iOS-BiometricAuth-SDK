@@ -19,6 +19,7 @@ A production-ready, clean, and testable iOS Biometric Authentication SDK for Fac
 - [Configuration](#configuration)
 - [API Reference](#api-reference)
 - [Best Practices](#best-practices)
+- [Troubleshooting](#troubleshooting)
 - [Support](#support)
 - [License](#license)
 
@@ -31,7 +32,7 @@ A production-ready, clean, and testable iOS Biometric Authentication SDK for Fac
 - 🎯 **Clean Public API** - Simple, intuitive interface
 - ✅ **Protocol-Based Architecture** - Fully testable with dependency injection
 - 🧵 **Thread-Safe** - All operations safely dispatched to main thread
-- 🚀 **Swift 6 Concurrency Ready** - @Sendable closure support
+- 🚀 **Swift Concurrency Compatible** - @Sendable closure support
 - 📦 **Multiple Distribution** - SPM, CocoaPods
 - 🔒 **Semantic Error Types** - Flexible error handling for UI
 - 🛡️ **Access Control** - Internal classes protected from external access
@@ -50,33 +51,47 @@ A production-ready, clean, and testable iOS Biometric Authentication SDK for Fac
 
 ## Installation
 
-### Swift Package Manager (Recommended)
-
-Add to your `Package.swift`:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git", from: "1.0.0")
-]
-```
-
-Or in Xcode:
-1. **File → Add Package Dependencies...**
-2. Enter URL: `https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git`
-3. Select version: `1.0.0` or higher
-
 ### CocoaPods
 
-Add to your `Podfile`:
+DefXBiometric is available through [CocoaPods](https://cocoapods.org). Add to your `Podfile`:
 
 ```ruby
-pod 'DefXBiometric', :git => 'https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git', :tag => '1.0.0'
+platform :ios, '12.0'
+use_frameworks!
+
+target 'YourAppName' do
+  pod 'DefXBiometric', '1.0.1'
+end
 ```
 
 Then run:
 
 ```bash
-pod install
+pod install --repo-update
+```
+
+**Important:** Always open the `.xcworkspace` file after installation, not the `.xcodeproj` file.
+
+### Swift Package Manager
+
+#### Via Xcode:
+1. **File → Add Package Dependencies...**
+2. Enter URL: `https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git`
+3. **Dependency Rule:** Up to Next Major Version `1.0.1`
+4. Click **Add Package**
+
+#### Via Package.swift:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/Definex-Mobile/iOS-BiometricAuth-SDK.git", from: "1.0.1")
+]
+```
+
+### Import SDK
+
+```swift
+import DefXBiometric
 ```
 
 ---
@@ -388,6 +403,46 @@ Since the SDK operates in biometrics-only mode, always offer password/PIN login 
 ### 4. Test on Real Device
 
 Simulators support biometric testing, but always verify on real devices for accurate behavior and performance.
+
+---
+
+## Troubleshooting
+
+### Build/Run Error: rsync "Operation not permitted"
+
+If you encounter build errors related to `rsync`, `mkstempat`, or "Operation not permitted" during build:
+
+**Solution:**
+
+1. Open your app target in Xcode
+2. Go to **Build Settings**
+3. Search for **"User Script Sandboxing"**
+4. Set **`ENABLE_USER_SCRIPT_SANDBOXING`** to **`NO`**
+
+Additionally, try cleaning:
+
+```bash
+# Clean build folder in Xcode: Product → Clean Build Folder (⇧⌘K)
+
+# Or delete DerivedData manually:
+rm -rf ~/Library/Developer/Xcode/DerivedData
+```
+
+### CocoaPods Web Interface Error
+
+If you see "Internal Server Error" on the cocoapods.org website when searching for DefXBiometric, this is a temporary issue with the web interface and does not affect the SDK or installation.
+
+**Verify SDK availability via Trunk:**
+
+```bash
+# Check pod info via Trunk
+pod trunk info DefXBiometric
+
+# Or use Trunk API directly
+curl https://trunk.cocoapods.org/api/v1/pods/DefXBiometric
+```
+
+The SDK installs correctly via `pod install` regardless of web interface status.
 
 ---
 
